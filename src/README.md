@@ -178,8 +178,8 @@ Example:
 ```json
 {
   "job_mode": "asynchronous",
-  "model_framework": "tensorflow",
-  "model_type": "Linear Regression",
+  "model_framework": "Tensorflow",
+  "model_type": "Regression",
   "database": "sustaindb",
   "collection": "noaa_nam",
   "gis_join_key": "COUNTY_GISJOIN",
@@ -191,7 +191,7 @@ Example:
   "normalize_inputs": true,
   "limit": 0,
   "sample_rate": 0.0,
-  "validation_metric": "RMSE",
+  "validation_metric": "loss",
   "gis_joins": [
     "G2000190",
     "G2000090",
