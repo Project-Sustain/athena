@@ -30,7 +30,7 @@ Hardcoding values into the client should be avoided as much as possible. Instead
 from MongoDB's `validation_catalogue` collection. This collection only has 1 record in it that summarizes the valid combinations of parameter selections, and provides
 descriptions for the fields.
 
-```
+```bson
 {
   "model_frameworks": {
     "description": "Supported model validation frameworks",
