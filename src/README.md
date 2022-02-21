@@ -2,25 +2,25 @@
 
 ## Progressive Disclosure
 
-On loading the page, 3 fields should be available:
-1. Allowing upload of a file (upload button)
-2. Allowing selection of Model Framework (drop-down? list)
-3. Allowing selection of Model Category (drop-down? list)
-4. Submission button, disabled
+On loading the page, 4 fields should be available:
+1. Allowing **Upload** of a file (upload button)
+2. Allowing selection of **Model Framework** (drop-down? list)
+3. Allowing selection of **Model Category** (drop-down? list)
+4. **Submission** button, disabled
 
-Selecting valid values should reveal two more fields:
-1. Dataset (list of collections supported by Model Category above)
+Selecting valid values should reveal four more fields:
+1. **Dataset** (list of collections supported by Model Category above)
    Selecting a valid dataset should reveal a table for that dataset, along with 2 fields:
    1. Features (drop-down? list -- multiple choices allowed)
    2. Labels (drop-down? list -- only one choice allowed)
    The table should have descriptions of the fields, units, as well as a card with a description of the dataset, and a link to it's source.
    These values, including the entries in the drop-down list for Dataset, should be populated with the Metadata collection document returned
    for each of the supported collections (keep reading further to understand).
-2. Validation Budget Type (list of budget types, i.e. limit or sample)
+2. **Validation Budget** Type (list of budget types, i.e. limit or sample)
    Selecting a budget type should reveal a card with a description of the budget type, and a control mechanism for choosing the budget value.
    allowing control of the value of the budget. In the case of limit and sample, they should just be sliders from the `min` value to the `max` value, inclusive.
-3. A boolean Normalize Inputs switch that toggles between True and False
-4. Validation Metric (drop-down? list, only one choice allowed)
+3. A boolean **Normalize Inputs** switch that toggles between True and False
+4. **Validation Metric** (drop-down? list, only one choice allowed)
    
 The submission button should not be enabled until all criteria have been met to create a request to validation-service servers.
 
