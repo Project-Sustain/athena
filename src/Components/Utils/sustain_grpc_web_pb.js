@@ -1,7 +1,6 @@
-/*
-Apache License
-Version 2.0, January 2004
-http://www.apache.org/licenses/
+/*                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
 
 
 Software in the Sustain Ecosystem are Released Under Terms of Apache Software License
@@ -57,31 +56,24 @@ You may add Your own copyright statement to Your modifications and may provide a
 
 END OF TERMS AND CONDITIONS
 */
+/**
+ * @fileoverview gRPC-Web generated client stub for sustain
+ * @enhanceable
+ * @public
+ */
 
-export const getApiKey = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('api_key');
-}
+// GENERATED CODE -- DO NOT EDIT!
 
-interface downloadCheckType {
-    canDownload: boolean,
-    timeLeft?: number
-}
 
-export const checkIfCanDownload = async (apiKey: string, countyID: string, dataset: any) => {
-    if(localStorage.getItem("dev")) {
-        return {canDownload: true, timeLeft: 0} as downloadCheckType;
-    }
-    return new Promise<downloadCheckType>((resolve) => {
-        fetch(`https://urban-sustain.org/api/download?apiKey=${apiKey}&county=${countyID}&dataset=${dataset.collection}`).then(async function (response) {
-            const body = await response.text();
-            if (response.status === 200) {
-                resolve({ canDownload: true })
-            }
-            const cooldown = JSON.parse(body.length ? body : `{"cooldown": 999999999}`)?.cooldown;
-            resolve({ canDownload: false, timeLeft: cooldown })
-        }).catch(err => {
-            resolve({ canDownload: false, timeLeft: 999999999 })
-        })
-    })
-}
+/* eslint-disable */
+// @ts-nocheck
+
+
+
+const grpc = {};
+grpc.web = require('grpc-web');
+
+const proto = {};
+proto.sustain = require('./sustain_pb.js');
+
+proto.sustain.JsonProxyClient=function(e,t,n){n||(n={}),n.format="text",this.client_=new grpc.web.GrpcWebClientBase(n),this.hostname_=e},proto.sustain.JsonProxyPromiseClient=function(e,t,n){n||(n={}),n.format="text",this.client_=new grpc.web.GrpcWebClientBase(n),this.hostname_=e};const methodDescriptor_JsonProxy_ModelQuery=new grpc.web.MethodDescriptor("/sustain.JsonProxy/ModelQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.JsonModelRequest,proto.sustain.JsonModelResponse,function(e){return e.serializeBinary()},proto.sustain.JsonModelResponse.deserializeBinary),methodInfo_JsonProxy_ModelQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.JsonModelResponse,function(e){return e.serializeBinary()},proto.sustain.JsonModelResponse.deserializeBinary);proto.sustain.JsonProxyClient.prototype.modelQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.JsonProxy/ModelQuery",e,t||{},methodDescriptor_JsonProxy_ModelQuery)},proto.sustain.JsonProxyPromiseClient.prototype.modelQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.JsonProxy/ModelQuery",e,t||{},methodDescriptor_JsonProxy_ModelQuery)};const methodDescriptor_JsonProxy_SlidingWindowQuery=new grpc.web.MethodDescriptor("/sustain.JsonProxy/SlidingWindowQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.JsonSlidingWindowRequest,proto.sustain.JsonSlidingWindowResponse,function(e){return e.serializeBinary()},proto.sustain.JsonSlidingWindowResponse.deserializeBinary),methodInfo_JsonProxy_SlidingWindowQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.JsonSlidingWindowResponse,function(e){return e.serializeBinary()},proto.sustain.JsonSlidingWindowResponse.deserializeBinary);proto.sustain.JsonProxyClient.prototype.slidingWindowQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.JsonProxy/SlidingWindowQuery",e,t||{},methodDescriptor_JsonProxy_SlidingWindowQuery)},proto.sustain.JsonProxyPromiseClient.prototype.slidingWindowQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.JsonProxy/SlidingWindowQuery",e,t||{},methodDescriptor_JsonProxy_SlidingWindowQuery)},proto.sustain.SustainClient=function(e,t,n){n||(n={}),n.format="text",this.client_=new grpc.web.GrpcWebClientBase(n),this.hostname_=e},proto.sustain.SustainPromiseClient=function(e,t,n){n||(n={}),n.format="text",this.client_=new grpc.web.GrpcWebClientBase(n),this.hostname_=e};const methodDescriptor_Sustain_CompoundQuery=new grpc.web.MethodDescriptor("/sustain.Sustain/CompoundQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.CompoundRequest,proto.sustain.CompoundResponse,function(e){return e.serializeBinary()},proto.sustain.CompoundResponse.deserializeBinary),methodInfo_Sustain_CompoundQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.CompoundResponse,function(e){return e.serializeBinary()},proto.sustain.CompoundResponse.deserializeBinary);proto.sustain.SustainClient.prototype.compoundQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/CompoundQuery",e,t||{},methodDescriptor_Sustain_CompoundQuery)},proto.sustain.SustainPromiseClient.prototype.compoundQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/CompoundQuery",e,t||{},methodDescriptor_Sustain_CompoundQuery)};const methodDescriptor_Sustain_CountQuery=new grpc.web.MethodDescriptor("/sustain.Sustain/CountQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.CountRequest,proto.sustain.CountResponse,function(e){return e.serializeBinary()},proto.sustain.CountResponse.deserializeBinary),methodInfo_Sustain_CountQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.CountResponse,function(e){return e.serializeBinary()},proto.sustain.CountResponse.deserializeBinary);proto.sustain.SustainClient.prototype.countQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/CountQuery",e,t||{},methodDescriptor_Sustain_CountQuery)},proto.sustain.SustainPromiseClient.prototype.countQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/CountQuery",e,t||{},methodDescriptor_Sustain_CountQuery)};const methodDescriptor_Sustain_ModelQuery=new grpc.web.MethodDescriptor("/sustain.Sustain/ModelQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.ModelRequest,proto.sustain.ModelResponse,function(e){return e.serializeBinary()},proto.sustain.ModelResponse.deserializeBinary),methodInfo_Sustain_ModelQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.ModelResponse,function(e){return e.serializeBinary()},proto.sustain.ModelResponse.deserializeBinary);proto.sustain.SustainClient.prototype.modelQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/ModelQuery",e,t||{},methodDescriptor_Sustain_ModelQuery)},proto.sustain.SustainPromiseClient.prototype.modelQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/ModelQuery",e,t||{},methodDescriptor_Sustain_ModelQuery)};const methodDescriptor_Sustain_DirectQuery=new grpc.web.MethodDescriptor("/sustain.Sustain/DirectQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.DirectRequest,proto.sustain.DirectResponse,function(e){return e.serializeBinary()},proto.sustain.DirectResponse.deserializeBinary),methodInfo_Sustain_DirectQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.DirectResponse,function(e){return e.serializeBinary()},proto.sustain.DirectResponse.deserializeBinary);proto.sustain.SustainClient.prototype.directQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/DirectQuery",e,t||{},methodDescriptor_Sustain_DirectQuery)},proto.sustain.SustainPromiseClient.prototype.directQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/DirectQuery",e,t||{},methodDescriptor_Sustain_DirectQuery)};const methodDescriptor_Sustain_SlidingWindowQuery=new grpc.web.MethodDescriptor("/sustain.Sustain/SlidingWindowQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.SlidingWindowRequest,proto.sustain.SlidingWindowResponse,function(e){return e.serializeBinary()},proto.sustain.SlidingWindowResponse.deserializeBinary),methodInfo_Sustain_SlidingWindowQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.SlidingWindowResponse,function(e){return e.serializeBinary()},proto.sustain.SlidingWindowResponse.deserializeBinary);proto.sustain.SustainClient.prototype.slidingWindowQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/SlidingWindowQuery",e,t||{},methodDescriptor_Sustain_SlidingWindowQuery)},proto.sustain.SustainPromiseClient.prototype.slidingWindowQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/SlidingWindowQuery",e,t||{},methodDescriptor_Sustain_SlidingWindowQuery)};const methodDescriptor_Sustain_EchoQuery=new grpc.web.MethodDescriptor("/sustain.Sustain/EchoQuery",grpc.web.MethodType.SERVER_STREAMING,proto.sustain.DirectRequest,proto.sustain.DirectResponse,function(e){return e.serializeBinary()},proto.sustain.DirectResponse.deserializeBinary),methodInfo_Sustain_EchoQuery=new grpc.web.AbstractClientBase.MethodInfo(proto.sustain.DirectResponse,function(e){return e.serializeBinary()},proto.sustain.DirectResponse.deserializeBinary);proto.sustain.SustainClient.prototype.echoQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/EchoQuery",e,t||{},methodDescriptor_Sustain_EchoQuery)},proto.sustain.SustainPromiseClient.prototype.echoQuery=function(e,t){return this.client_.serverStreaming(this.hostname_+"/sustain.Sustain/EchoQuery",e,t||{},methodDescriptor_Sustain_EchoQuery)},module.exports=proto.sustain;

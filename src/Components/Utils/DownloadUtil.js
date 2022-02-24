@@ -58,18 +58,30 @@ You may add Your own copyright statement to Your modifications and may provide a
 END OF TERMS AND CONDITIONS
 */
 
-export const isLinked = (selectedDataset: any) => {
-    return selectedDataset.level || selectedDataset.linked;
+export const getApiKey = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('api_key');
 }
 
-type stateOrCountyOrTract = "state"|"county"|"tract"
-type stateOrCountyOrTractCollection = "state_geo"|"county_geo_30mb_no_2d_index"|"tract_geo_140mb_no_2d_index"
-export const getCountyOrTractCollectionName = (name: stateOrCountyOrTract): stateOrCountyOrTractCollection => {
-    if(name === "state") {
-        return "state_geo"
+// interface downloadCheckType {
+//     canDownload: boolean,
+//     timeLeft?: number
+// }
+
+export const checkIfCanDownload = async (apiKey, countyID, dataset) => {
+    if(localStorage.getItem("dev")) {
+        return {canDownload: true, timeLeft: 0};
     }
-    if(name === "county"){
-        return "county_geo_30mb_no_2d_index"
-    }
-    return "tract_geo_140mb_no_2d_index"
+    return ((resolve) => {
+        fetch(`https://urban-sustain.org/api/download?apiKey=${apiKey}&county=${countyID}&dataset=${dataset.collection}`).then(async function (response) {
+            const body = await response.text();
+            if (response.status === 200) {
+                resolve({ canDownload: true })
+            }
+            const cooldown = JSON.parse(body.length ? body : `{"cooldown": 999999999}`)?.cooldown;
+            resolve({ canDownload: false, timeLeft: cooldown })
+        }).catch(err => {
+            resolve({ canDownload: false, timeLeft: 999999999 })
+        })
+    })
 }

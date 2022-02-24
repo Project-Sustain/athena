@@ -58,125 +58,18 @@ You may add Your own copyright statement to Your modifications and may provide a
 END OF TERMS AND CONDITIONS
 */
 
-import { isLinked, getCountyOrTractCollectionName } from "./DatasetUtil";
-import { sustain_querier } from "./grpc_querier.js";
-import streamsaver from "streamsaver"
-import { getApiKey } from "./DownloadUtil";
-
-const querier = sustain_querier();
-
-export default async function Download(currentDataset, regionSelected, includeGeospatialData){
-    const { GISJOIN, name } = regionSelected;
-    let pipeline = [];
-    let meta = {
-        collectionName: currentDataset.collection,
-        label: currentDataset.label,
-        regionName: name
-    }
-    if (currentDataset.fieldMetadata) {
-        meta.fieldLabels = currentDataset.fieldMetadata.filter((e) => e.label).map(({ name, label }) => { return { name, label } })
-    }
-    if (isLinked(currentDataset)) {
-        if (currentDataset.linked) {
-            meta.joinField = currentDataset.linked.field;
-        }
-        else {
-            meta.joinField = 'GISJOIN'
-        }
-    }
-
-    const datafileName = `${currentDataset.collection}.${regionSelected.name}.raw_data.json`;
-    if (["county", "tract"].includes(currentDataset?.level)) {
-        pipeline.push({ $match: { GISJOIN: { $regex: `${GISJOIN}.*` } } });
-
-        await mongoQuery(currentDataset.collection, pipeline, datafileName)
-        if (!includeGeospatialData) {
-            return { data: [], meta };
-        }
-        let geospatialData = await mongoQuery(getCountyOrTractCollectionName(currentDataset?.level), pipeline)
-        return { data: [], geometry: geospatialData, meta }
-    }
-    const regionGeometry = await getRegionGeometry(GISJOIN)
-    let collection= currentDataset.collection;
-
-    if (isLinked(currentDataset)) {
-        collection = currentDataset.linked.collection;
-    }
-
-    let dataA = await mongoQuery(collection, [{ "$match": { geometry: { "$geoIntersects": { "$geometry": regionGeometry[0].geometry } } } }], !isLinked(currentDataset) ? datafileName : null)
-    if (!isLinked(currentDataset)) {
-        return { data: [], meta };
-    }
-    const linkedFieldData = new Set(await mongoQuery(currentDataset.collection, [{ "$match": { [currentDataset.linked.field]: { "$in": dataA.map(p => p[currentDataset.linked.field]) } } }], datafileName, currentDataset.linked.field));
-    dataA = dataA.filter(geometryEntry => { return linkedFieldData.has(geometryEntry[currentDataset.linked.field])})
-    let returnable = { data: [], meta }
-    if (includeGeospatialData) {
-        returnable.geometry = dataA;
-    }
-    return returnable;
+export const isLinked = (selectedDataset) => {
+    return selectedDataset.level || selectedDataset.linked;
 }
 
-const getRegionGeometry = async (GISJOIN) => {
-    if(GISJOIN.length === 8) {
-        return await mongoQuery("county_geo_30mb", [{ $match: { GISJOIN } }])
+// type stateOrCountyOrTract = "state"|"county"|"tract"
+// type stateOrCountyOrTractCollection = "state_geo"|"county_geo_30mb_no_2d_index"|"tract_geo_140mb_no_2d_index"
+export const getCountyOrTractCollectionName = (name) => {
+    if(name === "state") {
+        return "state_geo"
     }
-    return await mongoQuery("state_geo", [{ $match: { GISJOIN } }])
-}
-
-
-export const mongoQuery = async (collection, pipeline, downloadFileName, onlyPopulateField) => {
-    let totalSize = 0;
-    return ((resolve) => {
-        const stream = querier.getStreamForQuery(collection, JSON.stringify(pipeline));
-        let filestream;
-        let writer;
-
-        const max_buffer_length = 2**25; // ~32MB
-        let buffered_file_text = "";
-
-        const writeToFilestream = (text, forceFlush = false) => {
-            buffered_file_text += text;
-            if (forceFlush || buffered_file_text.length > max_buffer_length) {
-                const encoder = new TextEncoder()
-                const bytes = encoder.encode(buffered_file_text);
-                buffered_file_text = "";
-                writer.write(bytes);
-                totalSize += bytes.length;
-            }
-        }
-
-        if (downloadFileName){
-            filestream = streamsaver.createWriteStream(downloadFileName)
-            writer = filestream.getWriter()
-            writeToFilestream('[')
-        }
-
-        let returnData = [];
-        let isFirst = true;
-        stream.on('data', (res) => {
-            const data = JSON.parse(res.getData());
-            if (!downloadFileName){
-                returnData.push(data)
-            }
-            else {
-                writeToFilestream((isFirst ? '' : ',') + '\n' + JSON.stringify(data, null, 4 ))
-                if (onlyPopulateField) {
-                    returnData.push(data[onlyPopulateField])
-                }
-            }
-            isFirst = false;
-        });
-
-        stream.on('end', () => {
-            if (downloadFileName){
-                writeToFilestream('\n]', true)
-                writer.close();
-                let apiKey = getApiKey();
-                fetch(`https://urban-sustain.org/api/downloadsize?apiKey=${apiKey}&downloadSize=${totalSize}`).then(async function (response) {
-                }).catch(err => {
-                })
-            }
-            resolve(returnData);
-        });
-    });
+    if(name === "county"){
+        return "county_geo_30mb_no_2d_index"
+    }
+    return "tract_geo_140mb_no_2d_index"
 }

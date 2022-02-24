@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import Dropdown from "./Dropdown";
 import {metadata} from "../metadata";
 import {useEffect, useState} from "react";
-import {mongoQuery} from "src/Components/Utils/Download";
+import {mongoQuery} from "../Components/Utils/Download";
 
 
 const useStyles = makeStyles( {
