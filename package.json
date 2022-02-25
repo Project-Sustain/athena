@@ -12,12 +12,12 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/streamsaver": "^2.0.1",
     "google-protobuf": "^3.19.4",
+    "grpc-web": "1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
     "streamsaver": "^2.0.5",
-    "web-vitals": "^2.1.4",
-    "grpc-web": "^1.2.1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
