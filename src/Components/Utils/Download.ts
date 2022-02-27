@@ -58,77 +58,13 @@ You may add Your own copyright statement to Your modifications and may provide a
 END OF TERMS AND CONDITIONS
 */
 
-// import { isLinked, getCountyOrTractCollectionName } from "./DatasetUtil";
 import { sustain_querier } from "./grpc_querier.js";
-// import DownloadResult, { downloadMeta } from "../types/DownloadResult";
-// import region from "../types/region";
-// import streamsaver from "streamsaver"
-// import { getApiKey } from "../library/DownloadUtil";
 
 // @ts-ignore
 import streamsaver from "streamsaver"
 import { getApiKey } from "./DownloadUtil";
 
 const querier = sustain_querier();
-
-// export default async function Download(currentDataset: any, regionSelected: region, includeGeospatialData: boolean): Promise<DownloadResult> {
-//     const { GISJOIN, name } = regionSelected;
-//     let pipeline: any[] = [];
-//     let meta: downloadMeta = {
-//         collectionName: currentDataset.collection,
-//         label: currentDataset.label,
-//         regionName: name
-//     }
-//     if (currentDataset.fieldMetadata) {
-//         meta.fieldLabels = currentDataset.fieldMetadata.filter((e: any) => e.label).map(({ name, label }: any) => { return { name, label } })
-//     }
-//     if (isLinked(currentDataset)) {
-//         if (currentDataset.linked) {
-//             meta.joinField = currentDataset.linked.field;
-//         }
-//         else {
-//             meta.joinField = 'GISJOIN'
-//         }
-//     }
-//
-//     const datafileName = `${currentDataset.collection}.${regionSelected.name}.raw_data.json`;
-//     if (["county", "tract"].includes(currentDataset?.level)) {
-//         pipeline.push({ $match: { GISJOIN: { $regex: `${GISJOIN}.*` } } });
-//
-//         await mongoQuery(currentDataset.collection, pipeline, datafileName)
-//         if (!includeGeospatialData) {
-//             return { data: [], meta };
-//         }
-//         let geospatialData = await mongoQuery(getCountyOrTractCollectionName(currentDataset?.level), pipeline)
-//         return { data: [], geometry: geospatialData, meta }
-//     }
-//     const regionGeometry = await getRegionGeometry(GISJOIN)
-//     let collection: string = currentDataset.collection;
-//
-//     if (isLinked(currentDataset)) {
-//         collection = currentDataset.linked.collection;
-//     }
-//
-//     let dataA = await mongoQuery(collection, [{ "$match": { geometry: { "$geoIntersects": { "$geometry": regionGeometry[0].geometry } } } }], !isLinked(currentDataset) ? datafileName : null)
-//     if (!isLinked(currentDataset)) {
-//         return { data: [], meta };
-//     }
-//     const linkedFieldData = new Set(await mongoQuery(currentDataset.collection, [{ "$match": { [currentDataset.linked.field]: { "$in": dataA.map(p => p[currentDataset.linked.field]) } } }], datafileName, currentDataset.linked.field));
-//     dataA = dataA.filter(geometryEntry => { return linkedFieldData.has(geometryEntry[currentDataset.linked.field])})
-//     let returnable: DownloadResult = { data: [], meta }
-//     if (includeGeospatialData) {
-//         returnable.geometry = dataA;
-//     }
-//     return returnable;
-// }
-//
-// const getRegionGeometry = async (GISJOIN: string) => {
-//     if(GISJOIN.length === 8) {
-//         return await mongoQuery("county_geo_30mb", [{ $match: { GISJOIN } }])
-//     }
-//     return await mongoQuery("state_geo", [{ $match: { GISJOIN } }])
-// }
-
 
 export const mongoQuery = async (collection: string, pipeline: any[], downloadFileName:string|null = null, onlyPopulateField: string|null = null) => {
     let totalSize = 0;
