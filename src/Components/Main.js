@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import Dropdown from "./Dropdown";
 import {metadata} from "../metadata";
 import {useEffect, useState} from "react";
-import {mongoQuery} from "../Components/Utils/Download";
+import {mongoQuery} from "./Utils/Download.ts";
 
 
 const useStyles = makeStyles( {
@@ -30,7 +30,7 @@ export default function Main() {
 
     useEffect(() => {
         (async () => {
-            const mongoData = await mongoQuery("state_gis_join_metadata", []);
+            const mongoData = await mongoQuery("validation_catalogue", []);
             if(mongoData){
                 console.log({mongoData})
             }
@@ -39,10 +39,6 @@ export default function Main() {
             }
         })();
     }, []);
-
-
-
-
 
     const handleFileReader = (event) => {
         let reader = new FileReader();
@@ -57,7 +53,7 @@ export default function Main() {
         formData.append('file', uploadFile[0])
         formData.append('request', valParameters.stringify)
 
-        // fetch('/saveImage', {
+        // fetch(https://sustain.cs.colostate.edu:31415/validation_service/submit_validation_job, {
         //     method: 'POST',
         //     body: formData
         // })
