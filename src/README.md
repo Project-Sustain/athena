@@ -99,7 +99,6 @@ This will return a JSON metadata entry like the following:
 	"dataSource" : "https://www.ncei.noaa.gov/products/weather-climate-models/north-american-mesoscale",
 	"descriptionSource" : "https://www.ncei.noaa.gov/products/weather-climate-models/north-american-mesoscale",
 	"description" : "The North American Mesoscale Forecast System (NAM) is one of the National Centers For Environmental Prediction’s (NCEP) major models for producing weather forecasts. NAM generates multiple grids (or domains) of weather forecasts over the North American continent at various horizontal resolutions. Each grid contains data for dozens of weather parameters, including temperature, precipitation, lightning, and turbulent kinetic energy. NAM uses additional numerical weather models to generate high-resolution forecasts over fixed regions, and occasionally to follow significant weather events like hurricanes.",
-	"spatialKey" : "COUNTY_GISJOIN",
 	"temporalKey" : "TIMESTAMP",
 	"fieldMetadata" : [
 		{
@@ -145,9 +144,6 @@ With both the populated fields from what the user selected, and the collection m
      all the `validation_catalogue.supported_collections.values`, getting the `"name"` field, then using that to query MongoDB for the collection metadata.
      This collection metadata should include a `"name"` field, use _that_ to populate the Dataset field list.
    - Default value: None
-- `gis_join_key`:
-   - Description: Denotes the GISJOIN field key in the collection. Similar to above, you'll have to query the collection metadata, then get the `spatialKey` field from that.
-   - Default value: None
 - `feature_fields`:
    - Description: A list of the selected fields for the collection chosen. While the Features field list should have human-readable names from the collection metadata, this will
      be the actual field names selected from the `supported_collections.values[X].features` in the `validation-catalogue` object.
@@ -182,7 +178,6 @@ Example:
   "model_type": "Regression",
   "database": "sustaindb",
   "collection": "noaa_nam",
-  "gis_join_key": "COUNTY_GISJOIN",
   "feature_fields": [
     "PRESSURE_AT_SURFACE_PASCAL",
     "RELATIVE_HUMIDITY_2_METERS_ABOVE_SURFACE_PERCENT"
