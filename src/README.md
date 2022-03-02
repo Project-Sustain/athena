@@ -85,7 +85,7 @@ This should provide enough information to build a full request to the server wit
 ## Collection Metadata
 
 To display information about the supported datasets (like the aforementioned table), the `Metadata` collection should be queried in MongoDB to retrieve comprehensive information about the fields, and supporting descriptions/links.
-For example, once you read the `model_catalogue`'s `supported_collections["values"], (i.e. `noaa_nam`), you may query MongoDB `db.Metadata.findOne({"collection": "noaa_nam"})` to find all information about NOAA NAM.
+For example, once you read the `model_catalogue`'s `supported_collections["values"]`, (i.e. `noaa_nam`), you may query MongoDB `db.Metadata.findOne({"collection": "noaa_nam"})` to find all information about NOAA NAM.
 Of course, you won't be using a Mongo Shell command to do this, it would be a connection between the JS client and the server, but this is yet to be determined how to be done.
 
 This will return a JSON metadata entry like the following:
