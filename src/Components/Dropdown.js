@@ -16,14 +16,14 @@ export default function Dropdown(props) {
     const [age, setAge] = React.useState('');
 
     const handleChange = (event) => {
-        setAge(event.target.value);
+        // setAge(event.target.value);
+        props.set(event.target.value);
     };
 
     function buildDropdownOptions() {
         const data = props.data;
-        console.log({data})
         const options = props.data.map((option) => {
-            return option.name;
+            return option;
         })
         return options
     }
@@ -40,7 +40,7 @@ export default function Dropdown(props) {
                     onChange={handleChange}
                 >
                     {options.map((option, index) => {
-                        return <MenuItem key={index} value={index}>{option}</MenuItem>;
+                        return <MenuItem key={index} value={option}>{option}</MenuItem>;
                     })}
                 </Select>
             </FormControl>
