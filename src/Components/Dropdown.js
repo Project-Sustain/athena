@@ -20,28 +20,36 @@ export default function Dropdown(props) {
 
     function buildDropdownOptions() {
         const data = props.data;
-        const options = props.data.map((option) => {
-            return option;
-        })
-        return options
+        if(props.data) {
+            const options = props.data.map((option) => {
+                return option;
+            })
+            return options
+        }
+        return null;
     }
 
     const options = buildDropdownOptions();
 
-    return (
-        <Box sx={{ minWidth: "40%" }} className={classes.root}>
-            <FormControl fullWidth>
-                <InputLabel>{props.name}</InputLabel>
-                <Select
-                    value={props.state}
-                    label={props.name}
-                    onChange={handleChange}
-                >
-                    {options.map((option, index) => {
-                        return <MenuItem key={index} value={option}>{option}</MenuItem>;
-                    })}
-                </Select>
-            </FormControl>
-        </Box>
-    );
+    if(options) {
+        return (
+            <Box sx={{minWidth: "40%"}} className={classes.root}>
+                <FormControl fullWidth>
+                    <InputLabel>{props.name}</InputLabel>
+                    <Select
+                        value={props.state}
+                        label={props.name}
+                        onChange={handleChange}
+                    >
+                        {options.map((option, index) => {
+                            return <MenuItem key={index} value={option}>{option}</MenuItem>;
+                        })}
+                    </Select>
+                </FormControl>
+            </Box>
+        );
+    }
+    else{
+        return null;
+    }
 }

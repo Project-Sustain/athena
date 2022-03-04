@@ -6,9 +6,20 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
+import {makeStyles} from "@material-ui/core";
 
+
+const useStyles = makeStyles( {
+    list: {
+        maxHeight: "90vh",
+        overflow: "auto",
+        width: "100%"
+    }
+});
 
 export default function CheckboxSection(props) {
+    const classes = useStyles;
+
     const handleToggle = (value) => () => {
         const currentIndex = props.checked.indexOf(value);
         const newChecked = [...props.checked];
@@ -24,7 +35,7 @@ export default function CheckboxSection(props) {
 
     if(props.data) {
         return (
-            <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+            <List className={classes.list}>
                 {props.data.map((value) => {
                     const labelId = `checkbox-list-label-${value}`;
 

@@ -6,7 +6,7 @@ import {metadata} from "../metadata";
 import {useEffect, useState} from "react";
 import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
-import {Input, styled} from "@mui/material";
+import {Input, Paper, styled} from "@mui/material";
 import {useAthena} from "./useAthena";
 
 
@@ -17,6 +17,10 @@ const useStyles = makeStyles( {
     },
     validateButton: {
        padding: "20px",
+    },
+    list: {
+        maxHeight: "90vh",
+        overflow: "auto"
     },
 });
 
@@ -66,10 +70,8 @@ export default function Main() {
         //         // console.error(error)
         //     })
     }
-    console.log(data.chosenFeatures)
-    console.log(data.chosenLabel)
 
-
+    console.log(data.validationData)
     if(loading) {
         return null;
     }
@@ -84,9 +86,11 @@ export default function Main() {
                                   state={data.modelFramework}/>
                         <Dropdown name="Supported Collections" data={data.validationData.supported_collections.values.map((value) => value.name)}
                                   set={dataManagement.updateCollection} state={data.collection}/>
-                        <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures} checked={data.chosenFeatures}/>
-                        {/*<Dropdown name="Select Label" data={(validationData.supported_collections.values.filter((value) => value.name === collection)[0]).labels}*/}
-                        {/*          set={setCollection}/>*/}
+                        <Paper style={{maxHeight: 250, overflow: 'auto'}}>
+                            <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures} checked={data.chosenFeatures}/>
+                        </Paper>
+                        <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel} state={data.chosenLabel}/>
+                        <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel} state={data.chosenLabel}/>
                     </Stack>
                 </div>
                 <div className="App">

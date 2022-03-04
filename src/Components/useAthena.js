@@ -10,13 +10,15 @@ import {Input, styled} from "@mui/material";
 
 
 export function useAthena() {
+    // console.log({chosenLabel});
+
     const [validationData, setValidationData] = useState({});
     const [modelCategory, setModelCategory] = useState("");
     const [modelFramework, setModelFramework] = useState("");
 
     const [collection, setCollection] = useState("")
     const [features, setFeatures] = useState([]);
-    const [label, setLabel] = useState(""); //Represents the variable of interest
+    const [labels, setLabels] = useState(""); //Represents the variable of interest
     const [chosenFeatures, setChosenFeatures] = useState([]);
     const [chosenLabel, setChosenLabel] = useState("");
 
@@ -24,6 +26,8 @@ export function useAthena() {
     const [normalizeInputs, setNormalizeInput] = useState("true")
     const [budgetLimit, setBudgetLimit] = useState(0)
     const [sampleRate, setSampleRate] = useState(0.0)
+    console.log({chosenLabel});
+
 
     useEffect(() => {
         (async () => {
@@ -41,9 +45,9 @@ export function useAthena() {
         const targetCollection = validationData.supported_collections.values.filter((value) => value.name === name)[0]
         setCollection(name)
         setFeatures(targetCollection.features)
-        setLabel(targetCollection.labels)
-        setChosenLabel(targetCollection.labels[0])
+        setLabels(targetCollection.labels)
         setChosenFeatures([])
+        setChosenLabel("")
     }
 
     const data = {
@@ -52,7 +56,7 @@ export function useAthena() {
         modelFramework,
         collection,
         features,
-        label,
+        labels,
         validationMetric,
         normalizeInputs,
         budgetLimit,
