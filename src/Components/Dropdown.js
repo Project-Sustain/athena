@@ -13,10 +13,8 @@ const useStyles = makeStyles( {
 
 export default function Dropdown(props) {
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
 
     const handleChange = (event) => {
-        // setAge(event.target.value);
         props.set(event.target.value);
     };
 
@@ -35,7 +33,7 @@ export default function Dropdown(props) {
             <FormControl fullWidth>
                 <InputLabel>{props.name}</InputLabel>
                 <Select
-                    value={age}
+                    value={props.state}
                     label={props.name}
                     onChange={handleChange}
                 >

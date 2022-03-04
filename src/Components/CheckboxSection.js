@@ -22,11 +22,10 @@ export default function CheckboxSection(props) {
         props.setChecked(newChecked);
     };
 
-    console.log(props.data)
     if(props.data) {
         return (
             <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
-                {props.data.features.map((value) => {
+                {props.data.map((value) => {
                     const labelId = `checkbox-list-label-${value}`;
 
                     return (

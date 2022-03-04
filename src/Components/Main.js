@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
 import {Input, styled} from "@mui/material";
+import {useAthena} from "./useAthena";
 
 
 const useStyles = makeStyles( {
@@ -20,42 +21,23 @@ const useStyles = makeStyles( {
 });
 
 export default function Main() {
+    const classes = useStyles;
     const job_mode = "asynchronous";
     const database = "sustaindb";
 
-    const [modelFrameWork, setModelFrameWork] = useState("");
-    const [modelCategory, setModelCategory] = useState("");
-    const [collection, setCollection] = useState("")
-    const [features, setFeatures] = useState([]);
-    const [label, setLabel] = useState(""); //Represents the variable of interest
-    const [validationMetric, setValidationMetric] = useState("")
-    const [normalizeInputs, setNormalizeInput] = useState("true")
-    const [budgetLimit, setBudgetLimit] = useState(0)
-    const [sampleRate, setSampleRate] = useState(0.0)
-
-    // console.log({validationData})
-
+    const {data, dataManagement} = useAthena();
     const [uploadFile, setUploadFile] = useState({})
     const [valParameters, setValParameters] = useState({})
-    const [validationData, setValidationData] = useState({})
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setLoading(Object.keys(validationData).length === 0);
-    }, [validationData]);
+        setLoading(Object.keys(data.validationData).length === 0);
+    }, [data.validationData]);
 
-    useEffect(() => {
-        (async () => {
-            const validationData = await mongoQuery("validation_catalogue", []);
-            if(validationData){
-                setValidationData(validationData[0])
+    // useEffect(() => {
+    //     setLoading(data === undefined);
+    // }, [data]);
 
-            }
-            else {
-                console.log("API call failure, data unavailable");
-            }
-        })();
-    }, []);
 
     const handleFileReader = (event) => {
         let reader = new FileReader();
@@ -64,9 +46,6 @@ export default function Main() {
             setUploadFile({data:reader.result.split(',').pop(),fileName:event.target.files[0].name})
         };
     }
-    // const Input = styled('input')({
-    //     display: 'none',
-    // });
 
     const validateModel = () => {
         const formData = new FormData()
@@ -87,24 +66,25 @@ export default function Main() {
         //         // console.error(error)
         //     })
     }
+    console.log(data.chosenFeatures)
+    console.log(data.chosenLabel)
 
-    const classes = useStyles;
 
     if(loading) {
         return null;
     }
     else {
-        console.log({collection})
         return (
             <div>
                 <div className={classes.root}>
                     <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
-                        <Dropdown name="Model Categories" data={validationData.model_categories.values} set={setModelCategory}/>
-                        <Dropdown name="Model Frameworks" data={validationData.model_frameworks.values} set={setModelFrameWork}/>
-                        <Dropdown name="Supported Collections" data={validationData.supported_collections.values.map((value) => value.name)}
-                                  set={setCollection}/>
-                        <CheckboxSection data={validationData.supported_collections.values.filter((value) => value.name === collection)[0]}
-                                         setChecked={setFeatures} checked={features}/>
+                        <Dropdown name="Model Categories" data={data.validationData.model_categories.values} set={dataManagement.setModelCategory}
+                                  state={data.modelCategory}/>
+                        <Dropdown name="Model Frameworks" data={data.validationData.model_frameworks.values} set={dataManagement.setModelFramework}
+                                  state={data.modelFramework}/>
+                        <Dropdown name="Supported Collections" data={data.validationData.supported_collections.values.map((value) => value.name)}
+                                  set={dataManagement.updateCollection} state={data.collection}/>
+                        <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures} checked={data.chosenFeatures}/>
                         {/*<Dropdown name="Select Label" data={(validationData.supported_collections.values.filter((value) => value.name === collection)[0]).labels}*/}
                         {/*          set={setCollection}/>*/}
                     </Stack>
