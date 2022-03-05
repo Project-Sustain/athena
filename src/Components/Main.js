@@ -8,6 +8,7 @@ import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
 import {Input, Paper, styled} from "@mui/material";
 import {useAthena} from "./useAthena";
+import {MetricSlider} from "./MetricSlider"
 
 
 const useStyles = makeStyles( {
@@ -72,6 +73,8 @@ export default function Main() {
     }
 
     console.log(data.validationData)
+    console.log(data.validationMetric)
+
     if(loading) {
         return null;
     }
@@ -90,7 +93,14 @@ export default function Main() {
                             <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures} checked={data.chosenFeatures}/>
                         </Paper>
                         <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel} state={data.chosenLabel}/>
-                        <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel} state={data.chosenLabel}/>
+                        <MetricSlider label="Validation Budget(Limit): " min={data.validationData.validation_budgets.values[0].min}
+                                      max={data.validationData.validation_budgets.values[0].max} set={dataManagement.setBudgetLimit}
+                                      value={data.budgetLimit}/>
+                        <MetricSlider label="Validation Budget(Sample): " min={data.validationData.validation_budgets.values[1].min}
+                                      max={data.validationData.validation_budgets.values[1].max} set={dataManagement.setSampleRate}
+                                      value={data.sampleRate}/>
+                        <Dropdown name="Validation Metric" data={data.validationData.validation_metrics.values}
+                                  set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                     </Stack>
                 </div>
                 <div className="App">
