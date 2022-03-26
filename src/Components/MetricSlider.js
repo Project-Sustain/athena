@@ -5,13 +5,21 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import MuiInput from '@mui/material/Input';
+import {makeStyles} from "@material-ui/core";
 // import VolumeUp from '@mui/icons-material/VolumeUp';
 
 const Input = styled(MuiInput)`
   width: 42px;
 `;
 
+const useStyles = makeStyles( {
+    text_box: {
+        minWidth: "25px",
+    },
+});
+
 export function MetricSlider(props) {
+    const classes = useStyles();
     const handleSliderChange = (event, newValue) => {
         props.set(newValue);
     };
@@ -49,6 +57,7 @@ export function MetricSlider(props) {
                 </Grid>
                 <Grid item>
                     <Input
+                        className={classes.text_box}
                         value={props.value}
                         onChange={handleInputChange}
                         onBlur={handleBlur}
