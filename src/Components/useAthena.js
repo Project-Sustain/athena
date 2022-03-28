@@ -26,7 +26,8 @@ export function useAthena() {
     const [normalizeInputs, setNormalizeInput] = useState("true")
     const [budgetLimit, setBudgetLimit] = useState(0)
     const [sampleRate, setSampleRate] = useState(0.0)
-    console.log({chosenLabel});
+    // const [prettyCollection, setPrettyCollection] = useState({});
+    // console.log({chosenLabel});
 
 
     useEffect(() => {
@@ -40,6 +41,23 @@ export function useAthena() {
             }
         })();
     }, []);
+
+    // useEffect(() => {
+    //     (async () => {
+    //         const collectionData = await mongoQuery("Metadata", []);
+    //         if(collectionData){
+    //             console.log({collectionData})
+    //             setPrettyCollection(collectionData[0])
+    //         }
+    //         else {
+    //             console.log("API call failure, data unavailable");
+    //         }
+    //     })();
+    // }, []);
+    //
+    //
+    // console.log({prettyCollection})
+
 
     function updateCollection(name){
         const targetCollection = validationData.supported_collections.values.filter((value) => value.name === name)[0]

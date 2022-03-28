@@ -36,10 +36,8 @@ export function MetricSlider(props) {
         }
     };
 
-    const stepRate = props.max / 10;
-
     return (
-        <Box component="span" sx={{width: 300}} >
+        <Box component="span" sx={{width: '100%'}} >
             <Typography id="input-slider" gutterBottom>
                 {props.label}
             </Typography>
@@ -52,17 +50,17 @@ export function MetricSlider(props) {
                         max={props.max}
                         min={props.min}
                         valueLabelDisplay="auto"
-                        step={stepRate}
+                        step={props.stepRate}
                     />
                 </Grid>
-                <Grid item>
+                <Grid>
                     <Input
-                        className={classes.text_box}
+                        style ={{width: '100%'}}
                         value={props.value}
                         onChange={handleInputChange}
                         onBlur={handleBlur}
                         inputProps={{
-                            step: stepRate,
+                            step: props.stepRate,
                             min: props.min,
                             max: props.max,
                             type: 'number',
