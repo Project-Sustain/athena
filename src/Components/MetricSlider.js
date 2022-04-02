@@ -13,8 +13,11 @@ const Input = styled(MuiInput)`
 `;
 
 const useStyles = makeStyles( {
+    root: {
+
+    },
     text_box: {
-        minWidth: "25px",
+        // minWidth: "25px",
     },
 });
 
@@ -37,35 +40,15 @@ export function MetricSlider(props) {
     };
 
     return (
-        <Box component="span" sx={{width: '100%'}} >
-            <Typography id="input-slider" gutterBottom>
-                {props.label}
-            </Typography>
+        <Box component="span" sx={{width: '85%'}} >
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs>
+                    <Typography align="center">{props.label} {props.value}</Typography>
                     <Slider
-                        value={props.value}
                         onChange={handleSliderChange}
-                        aria-labelledby="input-slider"
                         max={props.max}
                         min={props.min}
-                        valueLabelDisplay="auto"
                         step={props.stepRate}
-                    />
-                </Grid>
-                <Grid>
-                    <Input
-                        style ={{width: '100%'}}
-                        value={props.value}
-                        onChange={handleInputChange}
-                        onBlur={handleBlur}
-                        inputProps={{
-                            step: props.stepRate,
-                            min: props.min,
-                            max: props.max,
-                            type: 'number',
-                            'aria-labelledby': 'input-slider',
-                        }}
                     />
                 </Grid>
             </Grid>

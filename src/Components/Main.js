@@ -9,6 +9,7 @@ import CheckboxSection from "./CheckboxSection";
 import {Input, Paper, styled} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MetricSlider} from "./MetricSlider"
+import {MapSection} from "./Map/MapSection";
 
 
 const useStyles = makeStyles( {
@@ -79,6 +80,7 @@ export default function Main() {
     else {
         return (
             <div>
+                <MapSection/>
                 <Button onClick={handleOpen}>Open modal</Button>
                 <Modal
                     open={open}
@@ -104,7 +106,7 @@ export default function Main() {
                                                   value={data.budgetLimit}/>
                                     <MetricSlider label="Validation Budget(Sample): " min={data.validationData.validation_budgets.values[1].min}
                                                   max={data.validationData.validation_budgets.values[1].max} set={dataManagement.setSampleRate}
-                                                  value={data.sampleRate}/>
+                                                  value={data.sampleRate} stepRate={0.1}/>
                                     <Dropdown name="Validation Metric" data={data.validationData.validation_metrics.values}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                                 </Stack>

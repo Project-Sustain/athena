@@ -33,7 +33,7 @@ export default function Dropdown(props) {
 
     if(options) {
         return (
-            <Box sx={{minWidth: "40%"}} className={classes.root}>
+            <Box sx={{width: "85%"}} className={classes.root}>
                 <FormControl fullWidth>
                     <InputLabel>{props.name}</InputLabel>
                     <Select
