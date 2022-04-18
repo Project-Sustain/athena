@@ -91,23 +91,19 @@ export default function Main() {
                             <Button onClick={handleClose}>X</Button>
                             <div>
                                 <Stack direction="column" justifyContent="center" alignItems="center">
-                                    <Dropdown name="Model Categories" data={data.validationData.model_categories.values} set={dataManagement.setModelCategory}
-                                              state={data.modelCategory}/>
-                                    <Dropdown name="Model Frameworks" data={data.validationData.model_frameworks.values} set={dataManagement.setModelFramework}
+                                    <Dropdown name="Model Frameworks" data={data.validationData.model_frameworks.values.map((value) => value.human_readable)} set={dataManagement.setModelFramework}
                                               state={data.modelFramework}/>
+                                    <Dropdown name="Model Categories" data={data.validationData.model_categories.values.map((value) => value.human_readable)} set={dataManagement.setModelCategory}
+                                              state={data.modelCategory}/>
                                     <Dropdown name="Supported Collections" data={data.validationData.supported_collections.values.map((value) => value.name)}
                                               set={dataManagement.updateCollection} state={data.collection}/>
                                     <Paper style={{maxHeight: 250, overflow: 'auto'}}>
                                         <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures} checked={data.chosenFeatures}/>
                                     </Paper>
                                     <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel} state={data.chosenLabel}/>
-                                    <MetricSlider label="Validation Budget(Limit): " min={data.validationData.validation_budgets.values[0].min}
-                                                  max={data.validationData.validation_budgets.values[0].max} set={dataManagement.setBudgetLimit}
-                                                  value={data.budgetLimit}/>
-                                    <MetricSlider label="Validation Budget(Sample): " min={data.validationData.validation_budgets.values[1].min}
-                                                  max={data.validationData.validation_budgets.values[1].max} set={dataManagement.setSampleRate}
-                                                  value={data.sampleRate} stepRate={0.1}/>
-                                    <Dropdown name="Validation Metric" data={data.validationData.validation_metrics.values}
+                                    <Dropdown name="Validation Metric" data={data.validationData.validation_metrics.values.map((value) => value.human_readable)}
+                                              set={dataManagement.setValidationMetric} state={data.validationMetric}/>
+                                    <Dropdown name="Spatial Resolution" data={data.validationData.spatial_resolutions.values.map((value) => value.human_readable)}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                                 </Stack>
                                 <div className="App">

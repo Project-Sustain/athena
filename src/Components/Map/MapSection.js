@@ -1,21 +1,40 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet'
+import {useEffect, useState} from "react";
+import {mongoQuery} from "./../Utils/Download.ts";
+
 
 export function MapSection(props) {
 
-    // const map = useMap();
+    const position = [40.573733, -105.086559]
+    const [geoData, setGeoData] = useState({});
+
+    useEffect(() => {
+        (async () => {
+            const geoData = await mongoQuery("county_geo", []);
+            if(geoData){
+                setGeoData(geoData[0])
+            }
+            else {
+                console.log("API call failure, data unavailable");
+            }
+        })();
+    }, []);
+
+
+    const mapStyle = {
+        height: '100vh',
+        width: '100%',
+        margin: '0 auto',
+    }
 
     return (
 
-        <MapContainer center={[51.505, -0.09]} zoom={13}>
+        <MapContainer center={position} zoom={11} style={mapStyle}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+
             />
-            <Marker position={[51.505, -0.09]}>
-                <Popup>
-                    A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-            </Marker>
         </MapContainer>
     );
 
