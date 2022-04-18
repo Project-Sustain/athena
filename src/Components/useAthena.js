@@ -23,9 +23,12 @@ export function useAthena() {
     const [chosenLabel, setChosenLabel] = useState("");
 
     const [validationMetric, setValidationMetric] = useState("")
+    const [spatialResolution, setSpatialResolution] = useState("")
+
+
     const [normalizeInputs, setNormalizeInput] = useState("true")
-    const [budgetLimit, setBudgetLimit] = useState(0)
-    const [sampleRate, setSampleRate] = useState(0.0)
+    // const [budgetLimit, setBudgetLimit] = useState(0)
+    // const [sampleRate, setSampleRate] = useState(0.0)
     // const [prettyCollection, setPrettyCollection] = useState({});
     // console.log({chosenLabel});
 
@@ -76,9 +79,8 @@ export function useAthena() {
         features,
         labels,
         validationMetric,
+        spatialResolution,
         normalizeInputs,
-        budgetLimit,
-        sampleRate,
         chosenLabel,
         chosenFeatures
     }
@@ -90,9 +92,8 @@ export function useAthena() {
         setModelFramework,
         updateCollection: (name) => updateCollection(name),
         setValidationMetric,
+        setSpatialResolution,
         setNormalizeInput,
-        setBudgetLimit,
-        setSampleRate,
         setChosenLabel,
         setChosenFeatures
     }
