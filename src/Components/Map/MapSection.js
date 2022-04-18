@@ -10,9 +10,10 @@ export function MapSection(props) {
 
     useEffect(() => {
         (async () => {
-            const geoData = await mongoQuery("county_geo", []);
+            const geoData = await mongoQuery("county_geo_30mb_no_2d_index", []); // play around with other collection to see if it can be used. It is faster
             if(geoData){
-                setGeoData(geoData[0])
+                console.log({geoData})
+                setGeoData(geoData)
             }
             else {
                 console.log("API call failure, data unavailable");
@@ -26,6 +27,8 @@ export function MapSection(props) {
         width: '100%',
         margin: '0 auto',
     }
+
+    console.log({geoData})
 
     return (
 

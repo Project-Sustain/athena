@@ -42,9 +42,6 @@ const useStyles = makeStyles( {
 
 export default function Main() {
     const classes = useStyles();
-    const job_mode = "asynchronous";
-    const database = "sustaindb";
-
     const {data, dataManagement} = useAthena();
     const [uploadFile, setUploadFile] = useState({})
     const [valParameters, setValParameters] = useState({})
