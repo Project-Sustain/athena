@@ -3,62 +3,40 @@
 ## Progressive Disclosure
 
 On loading the page, 4 fields should be available:
-1. Allowing **Upload** of a file (upload button)
-2. Allowing selection of **Model Framework** (drop-down? list)
-3. Allowing selection of **Model Category** (drop-down? list)
-4. **Submission** button, disabled
 
-Selecting valid values should reveal four more fields:
-1. **Dataset** (list of collections supported by Model Category above)
-   Selecting a valid dataset should reveal a table for that dataset, along with 2 fields:
-   1. Features (drop-down? list -- multiple choices allowed)
-   2. Labels (drop-down? list -- only one choice allowed)
-   The table should have descriptions of the fields, units, as well as a card with a description of the dataset, and a link to it's source.
-   These values, including the entries in the drop-down list for Dataset, should be populated with the Metadata collection document returned
-   for each of the supported collections (keep reading further to understand).
-2. A boolean **Normalize Inputs** switch that toggles between True and False
-3. **Validation Metric** (drop-down? list, only one choice allowed)
+1. Allowing selection of **Model Framework** (drop-down list)
+   1. Selecting a Model Framework should reveal instructions about how to save a model with that framework in a format supported by our backend engine.
+   2. Allowing **Upload** of a file in one of the supported formats (disabled until Model Framework is chosen)
+2. Allowing selection of **Model Category** (drop-down list)
+   1. **Dataset** (list of collections supported by Model Category above)
+         Selecting a valid dataset should reveal a table for that dataset, along with 2 fields:
+      1. Features (drop-down? list -- multiple choices allowed)
+      2. Labels (drop-down? list -- only one choice allowed)
+         The table should have descriptions of the fields, units, as well as a card with a description of the dataset, and a link to it's source.
+         These values, including the entries in the drop-down list for Dataset, should be populated with the Metadata collection document returned
+         for each of the supported collections (keep reading further to understand).
+   2. **Validation Metric** (drop-down? list, only one choice allowed)
+   3. 3. A boolean **Normalize Inputs** switch that toggles between True and False
+3. **Submission** button, disabled/grayed-out
    
 The submission button should not be enabled until all criteria have been met to create a request to validation-service servers.
 
+## Viewport
+
+A viewport showing the shapes of the counties should be consistently on the screen. In addition to this, a user-selectable list of different
+spatial resolutions (i.e. `COUNTY`, `STATE`) should be provided such that when the user changes the spatial resolution value,
+the viewport uses the corresponding set of shapefiles to re-render the viewport.
+There should also be some way of toggling between `Viewport` and `All` for spatial coverage. This just specifies the GISJOIN coverage to
+validate the model on-- just the ones in the viewport, or all GISJOINs available.
+
 ## Validation Catalogue
 
-Hardcoding values into the client should be avoided as much as possible. Instead, information about the valid value choices and supported datasets should be retrieved
-from MongoDB's `validation_catalogue` collection. This collection only has 1 record in it that summarizes the valid combinations of parameter selections, and provides
-descriptions for the fields.
+Hard-coding values into the client should be avoided as much as possible. Instead, information about the valid value choices and supported datasets should be retrieved
+from MongoDB's `validation_catalogue` collection via a sustain-query-service query (subject to change). This collection only has 1 record in it that summarizes the valid combinations of parameter selections, and provides
+descriptions for the fields. The JSON source for this catalogue can be found in the [validation-service](https://github.com/Project-Sustain/validation-service)
+repository. This document serves as the base for changes to the catalogue, which are then pushed to MongoDB.
 
-```bson
-{
-  "model_frameworks": {
-    "description": "Supported model validation frameworks",
-    "values": ["Tensorflow", "Scikit-Learn", "PyTorch", ...]
-  },
-  "model_categories": {
-    "description": "Supported categories of models to be evaluated",
-    "values": ["Regression", ...]
-  },
-  "supported_collections": {
-    "description": "Collections supported to evaluate a model on",
-    "values": [
-      {
-        "name": "noaa_nam",
-        "features": ["TOTAL_CLOUD_COVER_PERCENT", ...],
-        "labels": ["PRESSURE_REDUCED_TO_MSL_PASCAL", ...],
-        "model_categories_supported": ["Regression", ...]
-      },
-      ...
-    ]
-  },
-  "validation_metrics": {
-    "description": "Validation metric for determining how a model performs",
-    "values": ["loss", "accuracy", ...]
-  }
-}
-```
-
-The `model_catalogue` JSON object should be queried from MongoDB when the client loads the page for the first time, and used to populate the lists for field selection.
-This should provide enough information to build a full request to the server with.
-
+- [validation_catalogue.json](https://github.com/Project-Sustain/validation-service/blob/main/resources/validation_catalogue.json)
 
 ## Collection Metadata
 
@@ -68,7 +46,7 @@ Of course, you won't be using a Mongo Shell command to do this, it would be a co
 
 This will return a JSON metadata entry like the following:
 
-```bson
+```
 {
 	"_id" : ObjectId("6213dfbad1df495b8ac3cc49"),
 	"name" : "NOAA NAM",
@@ -103,11 +81,26 @@ on the client-side to make it easier to do lookups and joins, rather than relyin
 
 ## Validation Job Request
 
-With both the populated fields from what the user selected, and the collection metadata from above, you can construct a validation job request object for sending.
+With both the populated fields from what the user selected and the collection metadata from above, you can construct a validation job request object for sending.
+
+### Request Schema
+
+The request schema should be used to validate outgoing requests. This schema contains a version number in it, and can be retrieved from the validation-service
+servers via an HTTP `GET` request to `https://sustain.cs.colostate.edu:31415/validation_service/schema`. The schema will be returned
+as an JSON response with the `Content-type: application/json` header set.
+
+- The source for the latest schema can be found here: [Validation Job Request Schema](https://github.com/Project-Sustain/validation-service/blob/main/resources/submit_validation_job_request_schema.json)
+
+Validating a JSON object with a schema should be relatively straightforward, see [AJV](https://ajv.js.org/) for examples.
+
+### Request Description
+
+A brief description is given below for each of the fields. This description needs to be updated with any major changes to the schema or request format.
+
+**v1.0.0**
 
 - `model_framework`:
    - Description: Users select this from the Model Framework field, whose values are determined by the `model_frameworks["values"]` from the `validation_catalogue`
-   - Default value: None
 - `model_category`:
    - Description: Users select this from the Model Category field, whose values are determined by the `model_categories["values"]` from the `validation_catalogue`
    - Default value: None
@@ -120,49 +113,55 @@ With both the populated fields from what the user selected, and the collection m
      This collection metadata should include a `"name"` field, use _that_ to populate the Dataset field list.
    - Default value: None
 - `feature_fields`:
-   - Description: A list of the selected fields for the collection chosen. While the Features field list should have human-readable names from the collection metadata, this will
+   - Description: A list of the selected fields for the collection chosen. While the Feature Fields list should have human-readable names from the collection metadata, this will
      be the actual field names selected from the `supported_collections.values[X].features` in the `validation-catalogue` object.
    - Default value: None
 - `label_field`:
-   - Description: A single selected label field for the collection chosen. While the Labels field list should have human-readable names from the collection metadata, this will
+   - Description: A single selected label field for the collection chosen. While the Label Field list should have human-readable names from the collection metadata, this will
      be the actual field name selected from the `supported_collections.values[X].labels` in the `validation-catalogue` object.
    - Default value: None
+- `spatial_resolution`:
+   - Description: The spatial resolution the user wants to perform model validation at. Values are determined by the `spatial_resolutions["values"]` from the `validation_catalogue`
+   - Default value: `COUNTY`
+- `spatial_coverage`:
+   - Description: The spatial coverage the user wants to perform model validation on. Values are determined by the `spatial_coverages["values"]` from the `validation_catalogue`
+   - Default value: `ALL`
 - `normalize_inputs`:
-   - Description: A flag telling the service whether or not to normalize the input data from MongoDB before feeding it to the model. This comes from the toggle switch in the UI.
+   - Description: A flag telling the service whether to normalize the input data from MongoDB before feeding it to the model. This comes from the toggle switch in the UI.
    - Default value: `true`
-- `validation_metric`:
-   - Description: This comes from the Validation Metric field, which is generated by the `model_catalogue.validation_metric.values`
-   - Default value: None
+- `loss_function`:
+   - Description: This comes from the Validation Metric field, whose values are generated by the `validation_metrics["values"]` from the `validation_catalogue`.
+   - Default value: `MEAN_SQUARED_ERROR`
 - `gis_joins`:
-   - Description: This is a list of GISJOIN values, based on the current shapes within the user's map viewport.
-   - Default value: `[]`
+   - Description: This is a list of GISJOIN values based on the current shapes within the user's map viewport. This should only be included in the request if the user has selected 
+     `spatial_coverage` of `SUBSET`.
+   - Default value: None
 
-
-Example:
+Example v1.0.0 request:
 
 ```json
 {
   "model_framework": "TENSORFLOW",
-  "model_type": "REGRESSION",
+  "model_category": "REGRESSION",
   "database": "sustaindb",
   "collection": "noaa_nam",
   "feature_fields": [
+    "PRESSURE_REDUCED_TO_MSL_PASCAL",
+    "VISIBILITY_AT_SURFACE_METERS",
+    "VISIBILITY_AT_CLOUD_TOP_METERS",
+    "WIND_GUST_SPEED_AT_SURFACE_METERS_PER_SEC",
     "PRESSURE_AT_SURFACE_PASCAL",
-    "RELATIVE_HUMIDITY_2_METERS_ABOVE_SURFACE_PERCENT"
+    "TEMPERATURE_AT_SURFACE_KELVIN",
+    "DEWPOINT_TEMPERATURE_2_METERS_ABOVE_SURFACE_KELVIN",
+    "RELATIVE_HUMIDITY_2_METERS_ABOVE_SURFACE_PERCENT",
+    "ALBEDO_PERCENT",
+    "TOTAL_CLOUD_COVER_PERCENT"
   ],
-  "label_field": "TEMPERATURE_AT_SURFACE_KELVIN",
+  "label_field": "SOIL_TEMPERATURE_0_TO_01_M_BELOW_SURFACE_KELVIN",
   "normalize_inputs": true,
-  "validation_metric": "loss",
-  "gis_joins": [
-    "G2000190",
-    "G2000090",
-    "G2000670",
-    "G2000610",
-    "G2000250",
-    "G2000070",
-    "G2000030",
-    "G2000470"
-  ]
+  "spatial_resolution": "COUNTY",
+  "loss_function": "MEAN_SQUARED_ERROR",
+  "spatial_coverage": "ALL"
 }
 ```
 
