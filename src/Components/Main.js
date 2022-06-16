@@ -1,14 +1,12 @@
 import * as React from 'react';
-import {Button, makeStyles, Modal} from "@material-ui/core";
+import {makeStyles, Modal} from "@material-ui/core";
 import Stack from '@mui/material/Stack';
 import Dropdown from "./Dropdown";
-import {metadata} from "../metadata";
 import {useEffect, useState} from "react";
 import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
-import {Input, Paper, styled} from "@mui/material";
+import {ButtonGroup, Paper, Button} from "@mui/material";
 import {useAthena} from "./useAthena";
-import {MetricSlider} from "./MetricSlider"
 import {MapSection} from "./Map/MapSection";
 
 
@@ -17,27 +15,29 @@ const useStyles = makeStyles( {
         width: "50%",
         justifyContent: "center"
     },
-    validateButton: {
-       padding: "20px",
+    buttons: {
+        margin: "10px",
     },
     list: {
         maxHeight: "90vh",
         overflow: "auto"
     },
     paper: {
-        padding: "20px",
-        marginTop: "20px",
-        marginBottom: "20px",
-        width: "50%",
+        width: "70%",
         justifyContent: "center",
         position: "absolute",
         top: "50%",
         left: "50%",
-        transform: "translate(-50%, -50%)"
+        transform: "translate(-50%, -50%)",
+        overflow: "auto",
+        maxHeight: "85vh",
+        padding: "10px"
     },
-    closeButton: {
-
-    }
+    checkboxPaper: {
+        overflow: "auto",
+        maxHeight: "30vh",
+        width: "85%"
+    },
 });
 
 export default function Main() {
@@ -58,7 +58,7 @@ export default function Main() {
         let reader = new FileReader();
         reader.readAsDataURL(event.target.files[0]);
         reader.onload = (e) => {
-            setUploadFile({data:reader.result.split(',').pop(),fileName:event.target.files[0].name})
+            setUploadFile({data: reader.result.split(',').pop(), fileName: event.target.files[0].name})
         };
     }
 
@@ -68,13 +68,10 @@ export default function Main() {
         formData.append('request', valParameters.stringify)
     }
 
-    console.log(data.validationData)
-    console.log(data.validationMetric)
 
-    if(loading) {
+    if (loading) {
         return null;
-    }
-    else {
+    } else {
         return (
             <div>
                 <MapSection/>
@@ -85,42 +82,52 @@ export default function Main() {
                 >
                     <>
                         <Paper className={classes.paper}>
-                            <Button onClick={handleClose}>X</Button>
                             <div>
                                 <Stack direction="column" justifyContent="center" alignItems="center">
-                                    <Dropdown name="Model Frameworks" data={data.validationData.model_frameworks.values.map((value) => value.human_readable)} set={dataManagement.setModelFramework}
-                                              state={data.modelFramework}/>
-                                    <Dropdown name="Model Categories" data={data.validationData.model_categories.values.map((value) => value.human_readable)} set={dataManagement.setModelCategory}
+                                    <Dropdown name="Model Frameworks"
+                                        data={data.validationData.model_frameworks.values.map((value) => value.human_readable)}
+                                        set={dataManagement.setModelFramework}
+                                        state={data.modelFramework}/>
+                                    <Dropdown name="Model Categories"
+                                              data={data.validationData.model_categories.values.map((value) => value.human_readable)}
+                                              set={dataManagement.setModelCategory}
                                               state={data.modelCategory}/>
-                                    <Dropdown name="Supported Collections" data={data.validationData.supported_collections.values.map((value) => value.name)}
+                                    <Dropdown name="Supported Collections"
+                                              data={data.validationData.supported_collections.values.map((value) => value.name)}
                                               set={dataManagement.updateCollection} state={data.collection}/>
-                                    <Paper style={{maxHeight: 250, overflow: 'auto'}}>
-                                        <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures} checked={data.chosenFeatures}/>
-                                    </Paper>
-                                    <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel} state={data.chosenLabel}/>
-                                    <Dropdown name="Validation Metric" data={data.validationData.validation_metrics.values.map((value) => value.human_readable)}
+                                    {renderFeatures()}
+                                    <Dropdown name="Select Label" data={data.labels} set={dataManagement.setChosenLabel}
+                                              state={data.chosenLabel}/>
+                                    <Dropdown name="Validation Metric"
+                                              data={data.validationData.validation_metrics.values.map((value) => value.human_readable)}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
-                                    <Dropdown name="Spatial Resolution" data={data.validationData.spatial_resolutions.values.map((value) => value.human_readable)}
+                                    <Dropdown name="Spatial Resolution"
+                                              data={data.validationData.spatial_resolutions.values.map((value) => value.human_readable)}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
+                                    <ButtonGroup className={classes.buttons} variant="outlined">
+                                        <Button component="label">Upload a file<input type="file" hidden/></Button>
+                                        <Button onClick={validateModel}>Validate Model</Button>
+                                    </ButtonGroup>
                                 </Stack>
-                                <div className="App">
-                                    <label htmlFor="zipUpload">
-                                        <Input
-                                            onInput={handleFileReader}
-                                            type="file"
-                                            name="Select Model"
-                                            id="zipUpload"
-                                            accept=".zip,.rar,.7zip"
-                                        />
-                                    </label>
-                                    <Button className={classes.validateButton} onClick={validateModel} variant="outlined">Validate
-                                        Model</Button>
-                                </div>
                             </div>
                         </Paper>
                     </>
                 </Modal>
             </div>
         );
+    }
+
+    function renderFeatures() {
+        if (data.collection === "") {
+            return null;
+        } else {
+            return (
+                <Paper className={classes.checkboxPaper}>
+                    <CheckboxSection data={data.features} setChecked={dataManagement.setChosenFeatures}
+                                     checked={data.chosenFeatures}/>
+                </Paper>
+            )
+
+        }
     }
 }
