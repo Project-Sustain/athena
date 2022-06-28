@@ -50,8 +50,6 @@ export function BugForm(props) {
 
     async function sendGitHub() {
 
-        // setOpen(false);
-
         const octokit = new Octokit({
             auth: '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'
         })
@@ -92,12 +90,10 @@ export function BugForm(props) {
                     />
                     <Stack direction='row' spacing={2} className={classes.buttons}>
                         <Button onClick={() => {
-                            handleClose();
-                            props.setAlert(true);
-                            // sendGitHub().then(r => {
-                            //     handleClose();
-                            //     props.setAlert(true);
-                            // });
+                            sendGitHub().then(r => {
+                                handleClose();
+                                props.setAlert(true);
+                            });
                         }}><SendIcon/>&nbsp;Submit Bug</Button>
                         <Button onClick={handleClose}><CloseIcon/></Button>
                     </Stack>
