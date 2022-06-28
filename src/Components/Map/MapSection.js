@@ -26,7 +26,7 @@ export function MapSection(props) {
     }, []);
 
 
-    console.log({geoData})
+    // console.log({geoData})
 
     const mapStyle = {
         height: '100vh',

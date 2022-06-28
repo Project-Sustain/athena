@@ -5,7 +5,7 @@ import Dropdown from "./Dropdown";
 import {useEffect, useState} from "react";
 import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
-import {ButtonGroup, Paper, Button} from "@mui/material";
+import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
 
@@ -70,7 +70,12 @@ export default function Main() {
 
 
     if (loading) {
-        return null;
+       return (
+           <Box >
+               <CircularProgress />
+           </Box>
+       );
+
     } else {
         return (
             <div>
