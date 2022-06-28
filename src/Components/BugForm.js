@@ -90,7 +90,7 @@ export function BugForm(props) {
                     />
                     <Stack direction='row' spacing={2} className={classes.buttons}>
                         <Button onClick={() => {
-                            sendGitHub().then(r => {
+                            sendGitHub().then(() => {
                                 handleClose();
                                 props.setAlert(true);
                             });
