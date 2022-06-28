@@ -8,6 +8,7 @@ import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
 import {BugForm} from "./BugForm";
+import BugAlert from "./BugAlert";
 
 
 const useStyles = makeStyles( {
@@ -42,11 +43,14 @@ const useStyles = makeStyles( {
 
 export default function Main() {
     const classes = useStyles();
+
     const {data, dataManagement} = useAthena();
     const [uploadFile, setUploadFile] = useState({})
     const [valParameters, setValParameters] = useState({})
     const [loading, setLoading] = useState(true);
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = useState(true);
+    const [alert, setAlert] = useState(false)
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -112,8 +116,9 @@ export default function Main() {
                                     <ButtonGroup className={classes.buttons} variant="outlined">
                                         <Button component="label">Upload a file<input type="file" hidden/></Button>
                                         <Button onClick={validateModel}>Validate Model</Button>
-                                        <BugForm/>
+                                        <BugForm setAlert={setAlert} />
                                     </ButtonGroup>
+                                    <BugAlert alert={alert} setAlert={setAlert} />
                                 </Stack>
                             </div>
                         </Paper>

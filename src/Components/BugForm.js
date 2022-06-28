@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState} from "react";
 import { makeStyles } from "@material-ui/core";
-import {Button, Modal, Alert, Typography, TextField, Stack, Paper} from "@mui/material";
+import {Button, Modal, Typography, TextField, Stack, Paper} from "@mui/material";
 import { Octokit } from "@octokit/core";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import CloseIcon from '@mui/icons-material/Close';
@@ -92,7 +92,12 @@ export function BugForm(props) {
                     />
                     <Stack direction='row' spacing={2} className={classes.buttons}>
                         <Button onClick={() => {
-                            sendGitHub().then(r => handleClose());
+                            handleClose();
+                            props.setAlert(true);
+                            // sendGitHub().then(r => {
+                            //     handleClose();
+                            //     props.setAlert(true);
+                            // });
                         }}><SendIcon/>&nbsp;Submit Bug</Button>
                         <Button onClick={handleClose}><CloseIcon/></Button>
                     </Stack>
