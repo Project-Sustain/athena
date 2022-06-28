@@ -3,12 +3,10 @@ import {makeStyles, Modal} from "@material-ui/core";
 import Stack from '@mui/material/Stack';
 import Dropdown from "./Dropdown";
 import {useEffect, useState} from "react";
-import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
 import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
-import {Octokit} from "@octokit/core";
 import {BugForm} from "./BugForm";
 
 

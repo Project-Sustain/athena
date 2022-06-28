@@ -1,26 +1,48 @@
 import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import {makeStyles} from "@material-ui/core";
-import {Button} from "@mui/material";
-import {Octokit} from "@octokit/core";
-
+import {useState} from "react";
+import { makeStyles } from "@material-ui/core";
+import {Button, Modal, Box, Typography, TextField, Stack} from "@mui/material";
+import { Octokit } from "@octokit/core";
+import BugReportIcon from '@mui/icons-material/BugReport';
+import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
 
 const useStyles = makeStyles( {
-    list: {
-        maxHeight: "90vh",
-        overflow: "auto",
-        width: "100%"
+    inputField: {
+        margin: "20px",
+        width: '100%',
+    },
+    buttons: {
+        width: "100%",
+        justifyContent: "center",
+        alignContent: "center"
     }
 });
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '40vw',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+};
+
 export function BugForm(props) {
-    const classes = useStyles;
+    const classes = useStyles();
+
+    const [open, setOpen] = useState(false);
+    const [description, setDescription] = useState("");
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    function updateDescription(event) {
+        const input = event.target.value;
+        setDescription(input);
+    }
 
     async function sendGitHub() {
         const octokit = new Octokit({
@@ -30,8 +52,8 @@ export function BugForm(props) {
         await octokit.request('POST /repos/Kmbear3/BugTracking/issues', {
             owner: 'Kmbear3',
             repo: 'bugTracking',
-            title: 'Found a Bug in Athena, test2',
-            body: 'I\'m having a problem with this.',
+            title: 'Found a Bug in Athena',
+            body: description,
             labels: [
                 'bug', 'userSubmitted'
             ]
@@ -39,9 +61,32 @@ export function BugForm(props) {
     }
 
     return (
-        <>
-            <Button onClick={sendGitHub}>Submit Bug</Button>
-        </>
+        <div>
+            <Button onClick={handleOpen}><BugReportIcon/>&nbsp;Report Bug</Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+            >
+                <Box sx={style}>
+                    <Typography variant="h6" component="h2" textAlign="center">
+                        Submit a Bug Report
+                    </Typography>
+                    <TextField
+                        className={classes.inputField}
+                        multiline
+                        rows={4}
+                        label="Please describe the issue you are noticing..."
+                        value={description}
+                        variant="outlined"
+                        onChange={(event) => updateDescription(event)}
+                    />
+                    <Stack direction='row' spacing={2}>
+                        <Button onClick={sendGitHub}><SendIcon/>&nbsp;Submit Bug</Button>
+                        <Button onClick={handleClose}><CloseIcon/></Button>
+                    </Stack>
+                </Box>
+            </Modal>
+        </div>
     )
 
 }
