@@ -8,6 +8,7 @@ import CheckboxSection from "./CheckboxSection";
 import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
+import {Octokit} from "@octokit/core";
 
 
 const useStyles = makeStyles( {
@@ -112,6 +113,7 @@ export default function Main() {
                                     <ButtonGroup className={classes.buttons} variant="outlined">
                                         <Button component="label">Upload a file<input type="file" hidden/></Button>
                                         <Button onClick={validateModel}>Validate Model</Button>
+                                        <Button onClick={sendGitHub}>Submit Bug</Button>
                                     </ButtonGroup>
                                 </Stack>
                             </div>
@@ -134,5 +136,22 @@ export default function Main() {
             )
 
         }
+    }
+
+    async function sendGitHub(){
+        const octokit = new Octokit({
+            auth: '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'
+        })
+
+        await octokit.request('POST /repos/kbarram/bugTracking/issues', {
+            owner: 'kbarram',
+            repo: 'bugTracking',
+            title: 'Found a Bug in Athena',
+            body: 'I\'m having a problem with this.',
+            labels: [
+                'bug', 'userSubmitted'
+            ]
+        })
+
     }
 }
