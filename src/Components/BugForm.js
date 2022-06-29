@@ -34,7 +34,7 @@ const useStyles = makeStyles( {
     }
 });
 
-export function BugForm(props) {
+export default function BugForm(props) {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
