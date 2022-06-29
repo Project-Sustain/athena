@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {makeStyles, Modal} from "@material-ui/core";
+import {makeStyles, Modal, Button, ButtonGroup} from "@material-ui/core";
 import Stack from '@mui/material/Stack';
 import Dropdown from "./Dropdown";
 import {useEffect, useState} from "react";
 import CheckboxSection from "./CheckboxSection";
-import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
+import {Paper, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
 import BugForm from "./BugForm";

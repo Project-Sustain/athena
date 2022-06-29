@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState} from "react";
-import {Stack, Typography, Button} from "@mui/material";
-import {Modal, TextField, Paper, makeStyles} from "@material-ui/core";
+import {Stack, Typography} from "@mui/material";
+import {Modal, TextField, Paper, makeStyles, Button} from "@material-ui/core";
 import { Octokit } from "@octokit/core";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import CloseIcon from '@mui/icons-material/Close';
