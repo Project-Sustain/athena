@@ -7,7 +7,7 @@ import CheckboxSection from "./CheckboxSection";
 import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
-import {BugForm} from "./BugForm";
+import BugForm from "./BugForm";
 import BugAlert from "./BugAlert";
 
 

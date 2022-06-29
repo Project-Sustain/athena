@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState} from "react";
-import { makeStyles } from "@material-ui/core";
-import {Button, Modal, Typography, TextField, Stack, Paper} from "@mui/material";
+import {Stack, Typography, Button} from "@mui/material";
+import {Modal, TextField, Paper, makeStyles} from "@material-ui/core";
 import { Octokit } from "@octokit/core";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import CloseIcon from '@mui/icons-material/Close';
@@ -68,7 +68,7 @@ export default function BugForm(props) {
 
     return (
         <div>
-            <Button onClick={handleOpen}><BugReportIcon/>&nbsp;Report Bug</Button>
+            <Button variant='outlined' onClick={handleOpen}><BugReportIcon/>&nbsp;Report Bug</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -89,13 +89,13 @@ export default function BugForm(props) {
                         onChange={(event) => updateDescription(event)}
                     />
                     <Stack direction='row' spacing={2} className={classes.buttons}>
-                        <Button onClick={() => {
+                        <Button variant='outlined' onClick={() => {
                             sendGitHub().then(() => {
                                 handleClose();
                                 props.setAlert(true);
                             });
                         }}><SendIcon/>&nbsp;Submit Bug</Button>
-                        <Button onClick={handleClose}><CloseIcon/></Button>
+                        <Button variant='outlined' onClick={handleClose}><CloseIcon/></Button>
                     </Stack>
                 </Paper>
             </Modal>
