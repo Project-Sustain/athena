@@ -1,11 +1,12 @@
 import * as React from 'react';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {Stack, Typography} from "@mui/material";
 import {Modal, TextField, Paper, makeStyles, Button} from "@material-ui/core";
 import { Octokit } from "@octokit/core";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
+import { auth } from './bugSubmitAuth';
 
 const useStyles = makeStyles( {
     inputField: {
@@ -34,11 +35,17 @@ const useStyles = makeStyles( {
     }
 });
 
-export default function BugForm(props) {
+export default function BugReport(props) {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
     const [description, setDescription] = useState("");
+    const [disableSubmit, setDisableSubmit] = useState(true);
+
+    useEffect(() => {
+        const numberOfWords = description.split(" ").length;
+        setDisableSubmit(!(numberOfWords > 3) || description === '');
+    }, [description])
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -51,13 +58,13 @@ export default function BugForm(props) {
     async function sendGitHub() {
 
         const octokit = new Octokit({
-            auth: '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'
+            auth: auth
         })
 
-        await octokit.request('POST /repos/Kmbear3/BugTracking/issues', {
-            owner: 'Kmbear3',
-            repo: 'bugTracking',
-            title: 'Found a Bug in Athena',
+        await octokit.request('POST /repos/Project-Sustain/athena/issues', {
+            owner: 'Project-Sustain',
+            repo: 'athena',
+            title: `Bug Report: ${description.split(" ").slice(0, 3).join(" ")}...`,
             body: description,
             labels: [
                 'bug', 'userSubmitted'
@@ -89,8 +96,9 @@ export default function BugForm(props) {
                         onChange={(event) => updateDescription(event)}
                     />
                     <Stack direction='row' spacing={2} className={classes.buttons}>
-                        <Button variant='outlined' onClick={() => {
+                        <Button disabled={disableSubmit} variant='outlined' onClick={() => {
                             sendGitHub().then(() => {
+                                setDescription("");
                                 handleClose();
                                 props.setAlert(true);
                             });

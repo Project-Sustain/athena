@@ -7,7 +7,7 @@ import CheckboxSection from "./CheckboxSection";
 import {Paper, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
-import BugForm from "./BugForm";
+import BugReport from "./BugReport";
 import BugAlert from "./BugAlert";
 
 
@@ -116,7 +116,7 @@ export default function Main() {
                                     <ButtonGroup className={classes.buttons} variant="outlined">
                                         <Button component="label">Upload a file<input type="file" hidden/></Button>
                                         <Button onClick={validateModel}>Validate Model</Button>
-                                        <BugForm setAlert={setAlert} />
+                                        <BugReport setAlert={setAlert} />
                                     </ButtonGroup>
                                     <BugAlert alert={alert} setAlert={setAlert} />
                                 </Stack>
