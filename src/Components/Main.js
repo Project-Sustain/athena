@@ -18,6 +18,9 @@ const useStyles = makeStyles( {
     },
     buttons: {
         margin: "10px",
+        width: '85%',
+        alignContent: 'center',
+        justifyContent: 'center'
     },
     list: {
         maxHeight: "90vh",
@@ -71,7 +74,6 @@ export default function Main() {
         formData.append('file', uploadFile[0])
         formData.append('request', valParameters.stringify)
     }
-
 
     if (loading) {
        return (
