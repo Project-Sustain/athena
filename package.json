@@ -7,12 +7,18 @@
     "@emotion/styled": "^11.6.0",
     "@material-ui/core": "^4.12.3",
     "@mui/material": "^5.4.0",
+    "@octokit/core": "^3.6.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@types/streamsaver": "^2.0.1",
+    "google-protobuf": "^3.19.4",
+    "grpc-web": "1.2.1",
+    "leaflet": "^1.7.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
+    "streamsaver": "^2.0.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -38,5 +44,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-leaflet": "^3.2.5"
   }
 }
