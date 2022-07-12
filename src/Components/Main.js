@@ -55,12 +55,8 @@ export default function Main() {
         setLoading(Object.keys(data.validationData).length === 0);
     }, [data.validationData]);
 
-    const handleFileReader = (event) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(event.target.files[0]);
-        reader.onload = (e) => {
-            setUploadFile({data: reader.result.split(',').pop(), fileName: event.target.files[0].name})
-        };
+    const handleFileSubmission = (event) => {
+        setUploadFile(event.target.files[0]);
     }
 
     // const validateModel = () => {
@@ -70,18 +66,19 @@ export default function Main() {
     // }
 
     async function sendRequest(){
-        console.log(request)
+        console.log({request})
         const formData = new FormData();
         const url = "http://lattice-100.cs.colostate.edu:5000/validation_service/submit_validation_job";
-        formData.append('file', uploadFile[0]);
+        formData.append('file', uploadFile);
+        console.log(uploadFile)
         //valParameters.stringify
-        formData.append('request', request);
+        console.log(JSON.stringify(request))
+        formData.append('request', JSON.stringify(request));
 
         const response = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'multipart/form-data'},
             mode: 'no-cors',
-            formData,
+            body: formData,
         });
         const reader = response.body.getReader();
 
@@ -135,7 +132,7 @@ export default function Main() {
                                               data={data.validationData.spatial_resolutions.values.map((value) => value.human_readable)}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                                     <ButtonGroup className={classes.buttons} variant="outlined">
-                                        <Button component="label">Upload a file<input type="file" hidden/></Button>
+                                        <Button component="label">Upload a file<input type="file" hidden onChange={handleFileSubmission}/></Button>
                                         <Button onClick={() => sendRequest()}>Validate Model</Button>
                                     </ButtonGroup>
                                 </Stack>
