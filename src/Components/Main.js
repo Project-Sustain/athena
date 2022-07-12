@@ -8,6 +8,7 @@ import CheckboxSection from "./CheckboxSection";
 import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
+import {request} from "./test_request";
 
 
 const useStyles = makeStyles( {
@@ -62,12 +63,36 @@ export default function Main() {
         };
     }
 
-    const validateModel = () => {
-        const formData = new FormData()
-        formData.append('file', uploadFile[0])
-        formData.append('request', valParameters.stringify)
-    }
+    // const validateModel = () => {
+    //     const formData = new FormData()
+    //     formData.append('file', uploadFile[0])
+    //     formData.append('request', valParameters.stringify)
+    // }
 
+    async function sendRequest(){
+        console.log(request)
+        const formData = new FormData();
+        const url = "http://lattice-100.cs.colostate.edu:5000/validation_service/submit_validation_job";
+        formData.append('file', uploadFile[0]);
+        //valParameters.stringify
+        formData.append('request', request);
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'multipart/form-data'},
+            mode: 'no-cors',
+            formData,
+        });
+        const reader = response.body.getReader();
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            console.log('Received', value);
+        }
+
+        console.log('Response fully received');
+    }
 
     if (loading) {
        return (
@@ -111,7 +136,7 @@ export default function Main() {
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                                     <ButtonGroup className={classes.buttons} variant="outlined">
                                         <Button component="label">Upload a file<input type="file" hidden/></Button>
-                                        <Button onClick={validateModel}>Validate Model</Button>
+                                        <Button onClick={() => sendRequest()}>Validate Model</Button>
                                     </ButtonGroup>
                                 </Stack>
                             </div>
