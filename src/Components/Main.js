@@ -7,6 +7,7 @@ import CheckboxSection from "./CheckboxSection";
 import {Paper, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
+import {request} from "./test_request";
 import BugReport from "./BugReport";
 import BugAlert from "./BugAlert";
 
@@ -61,18 +62,54 @@ export default function Main() {
         setLoading(Object.keys(data.validationData).length === 0);
     }, [data.validationData]);
 
-    const handleFileReader = (event) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(event.target.files[0]);
-        reader.onload = (e) => {
-            setUploadFile({data: reader.result.split(',').pop(), fileName: event.target.files[0].name})
-        };
+    const handleFileSubmission = (event) => {
+        setUploadFile(event.target.files[0]);
     }
 
-    const validateModel = () => {
-        const formData = new FormData()
-        formData.append('file', uploadFile[0])
-        formData.append('request', valParameters.stringify)
+    // const validateModel = () => {
+    //     const formData = new FormData()
+    //     formData.append('file', uploadFile[0])
+    //     formData.append('request', valParameters.stringify)
+    // }
+
+    async function sendRequest(){
+        console.log({request})
+        const formData = new FormData();
+        const url = "https://sustain.cs.colostate.edu:31415/validation_service/submit_validation_job";
+        formData.append('file', uploadFile);
+        console.log(uploadFile)
+        //valParameters.stringify
+        console.log(JSON.stringify(request))
+        formData.append('request', JSON.stringify(request));
+
+        let response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+        }).then(response => {
+            const reader = response.body.getReader();
+                return new ReadableStream({
+                    start(controller) {
+                        // The following function handles each data chunk
+                        function push() {
+                            // "done" is a Boolean and value a "Uint8Array"
+                            reader.read().then( ({done, value}) => {
+                                // If there is no more data to read
+                                if (done) {
+                                    console.log('done', done);
+                                    controller.close();
+                                    return;
+                                }
+                                // Get the data and send it to the browser via the controller
+                                controller.enqueue(value);
+                                // Check chunks by logging to the console
+                                console.log(done, new TextDecoder().decode(value));
+                                push();
+                            })
+                        }
+                        push();
+                    }
+                });
+        })
     }
 
     if (loading) {
@@ -116,8 +153,10 @@ export default function Main() {
                                               data={data.validationData.spatial_resolutions.values.map((value) => value.human_readable)}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                                     <ButtonGroup className={classes.buttons} variant="outlined">
-                                        <Button component="label">Upload a file<input type="file" hidden/></Button>
-                                        <Button onClick={validateModel}>Validate Model</Button>
+
+                                        <Button component="label">Upload a file<input type="file" hidden onChange={handleFileSubmission}/></Button>
+                                        <Button onClick={() => sendRequest()}>Validate Model</Button>
+                                               
                                         <BugReport setAlert={setAlert} />
                                     </ButtonGroup>
                                     <BugAlert alert={alert} setAlert={setAlert} />
