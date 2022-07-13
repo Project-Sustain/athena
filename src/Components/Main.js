@@ -68,27 +68,55 @@ export default function Main() {
     async function sendRequest(){
         console.log({request})
         const formData = new FormData();
-        const url = "http://lattice-100.cs.colostate.edu:5000/validation_service/submit_validation_job";
+        const url = "https://sustain.cs.colostate.edu:31415/validation_service/submit_validation_job";
         formData.append('file', uploadFile);
         console.log(uploadFile)
         //valParameters.stringify
         console.log(JSON.stringify(request))
         formData.append('request', JSON.stringify(request));
 
-        const response = await fetch(url, {
+        // await fetch(url, {
+        //     method: 'POST',
+        //     mode: 'no-cors',
+        //     body: formData,
+        // }).then(response => response.body).then(rb => {
+        //     const reader = rb.getReader();
+        // )
+
+
+        let response = await fetch(url, {
             method: 'POST',
-            mode: 'no-cors',
             body: formData,
+        }).then(response => {
+            const reader = response.body.getReader();
+                return new ReadableStream({
+                    start(controller) {
+                        // The following function handles each data chunk
+                        function push() {
+                            // "done" is a Boolean and value a "Uint8Array"
+                            reader.read().then( ({done, value}) => {
+                                // If there is no more data to read
+                                if (done) {
+                                    console.log('done', done);
+                                    controller.close();
+                                    return;
+                                }
+                                // Get the data and send it to the browser via the controller
+                                controller.enqueue(value);
+                                // Check chunks by logging to the console
+                                console.log(done, value);
+                                push();
+                            })
+                        }
+
+                        push();
+                    }
+                });
+        }).then(result => {
+            // Do things with result
+            console.log(result);
         });
-        const reader = response.body.getReader();
 
-        while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            console.log('Received', value);
-        }
-
-        console.log('Response fully received');
     }
 
     if (loading) {
