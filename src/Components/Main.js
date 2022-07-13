@@ -75,15 +75,6 @@ export default function Main() {
         console.log(JSON.stringify(request))
         formData.append('request', JSON.stringify(request));
 
-        // await fetch(url, {
-        //     method: 'POST',
-        //     mode: 'no-cors',
-        //     body: formData,
-        // }).then(response => response.body).then(rb => {
-        //     const reader = rb.getReader();
-        // )
-
-
         let response = await fetch(url, {
             method: 'POST',
             body: formData,
@@ -104,19 +95,14 @@ export default function Main() {
                                 // Get the data and send it to the browser via the controller
                                 controller.enqueue(value);
                                 // Check chunks by logging to the console
-                                console.log(done, value);
+                                console.log(done, new TextDecoder().decode(value));
                                 push();
                             })
                         }
-
                         push();
                     }
                 });
-        }).then(result => {
-            // Do things with result
-            console.log(result);
-        });
-
+        })
     }
 
     if (loading) {
