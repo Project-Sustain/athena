@@ -1,14 +1,15 @@
 import * as React from 'react';
-import {makeStyles, Modal} from "@material-ui/core";
+import {makeStyles, Modal, Button, ButtonGroup} from "@material-ui/core";
 import Stack from '@mui/material/Stack';
 import Dropdown from "./Dropdown";
 import {useEffect, useState} from "react";
-import {mongoQuery} from "./Utils/Download.ts";
 import CheckboxSection from "./CheckboxSection";
-import {ButtonGroup, Paper, Button, CircularProgress, Box} from "@mui/material";
+import {Paper, CircularProgress, Box} from "@mui/material";
 import {useAthena} from "./useAthena";
 import {MapSection} from "./Map/MapSection";
 import {request} from "./test_request";
+import BugReport from "./BugReport";
+import BugAlert from "./BugAlert";
 
 
 const useStyles = makeStyles( {
@@ -18,6 +19,9 @@ const useStyles = makeStyles( {
     },
     buttons: {
         margin: "10px",
+        width: '85%',
+        alignContent: 'center',
+        justifyContent: 'center'
     },
     list: {
         maxHeight: "90vh",
@@ -43,11 +47,14 @@ const useStyles = makeStyles( {
 
 export default function Main() {
     const classes = useStyles();
+
     const {data, dataManagement} = useAthena();
     const [uploadFile, setUploadFile] = useState({})
     const [valParameters, setValParameters] = useState({})
     const [loading, setLoading] = useState(true);
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = useState(true);
+    const [alert, setAlert] = useState(false)
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -146,9 +153,13 @@ export default function Main() {
                                               data={data.validationData.spatial_resolutions.values.map((value) => value.human_readable)}
                                               set={dataManagement.setValidationMetric} state={data.validationMetric}/>
                                     <ButtonGroup className={classes.buttons} variant="outlined">
+
                                         <Button component="label">Upload a file<input type="file" hidden onChange={handleFileSubmission}/></Button>
                                         <Button onClick={() => sendRequest()}>Validate Model</Button>
+                                               
+                                        <BugReport setAlert={setAlert} />
                                     </ButtonGroup>
+                                    <BugAlert alert={alert} setAlert={setAlert} />
                                 </Stack>
                             </div>
                         </Paper>
@@ -171,4 +182,5 @@ export default function Main() {
 
         }
     }
+
 }
